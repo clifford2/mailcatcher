@@ -15,5 +15,6 @@ services:
     networks:
       your-network:
     ports:
+      - "2525:2525"
       - "8080:8080"
     restart: on-failure

@@ -29,10 +29,10 @@ LABEL org.label-schema.vendor="Clifford Weinmann" \
 #  za.co.glacierconsulting.eye.component="mailcatcher" \
 #  za.co.glacierconsulting.eye.distribution-scope="public"
 
-# set user details
+# Set user details
 ENV MAIL_USERNAME="catcher"
 ENV MAIL_USERID="8143"
-# set exit on error flag, install ruby deps, build mailcatcher, remove build deps, add user
+# Set exit on error flag, install ruby deps, build mailcatcher, remove build deps, add user
 RUN echo "install mailcatcher" \
 	&& set -e \
     && apk add --no-cache ruby ruby-bigdecimal ruby-json libstdc++ sqlite-libs \
@@ -41,11 +41,13 @@ RUN echo "install mailcatcher" \
     && gem install mailcatcher --no-ri --no-rdoc \
     && apk del .build-deps \
     && rm -rf /tmp/* /var/tmp/* \
-	&& adduser -u $MAIL_USERID -h /home/$MAIL_USERNAME -s /sbin/nologin -D -g 'MailCatcher' $MAIL_USERNAME
+	&& adduser -u $MAIL_USERID -h /home/$MAIL_USERNAME -s /sbin/nologin -D -g 'MailCatcher' $MAIL_USERNAME \
+	&& sed -i -e 's/^root::/root:!:/' /etc/shadow
+# Last step is to remove null root password if present (CVE-2019-5021)
 
-# expose ports
+# Expose ports
 EXPOSE 2525 8080
 
-# entrypoint: run mailcatcher process as $MAIL_USERNAME
+# Entrypoint: run mailcatcher process as $MAIL_USERNAME
 USER $MAIL_USERNAME
 CMD ["mailcatcher", "--no-quit", "--foreground", "--ip=0.0.0.0", "--smtp-port=2525", "--http-port=8080"]
