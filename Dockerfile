@@ -24,10 +24,6 @@ LABEL RUN="docker run -d --rm -p 2525:2525 -p 8080:8080 cliffordw/mailcatcher"
 LABEL org.label-schema.vendor="Clifford Weinmann" \
   org.label-schema.name="Mailcatcher" \
   org.label-schema.docker.schema-version="1.0"
-# Labels to help us identify / filter our images / containers
-#LABEL za.co.glacierconsulting.eye.product="eye" \
-#  za.co.glacierconsulting.eye.component="mailcatcher" \
-#  za.co.glacierconsulting.eye.distribution-scope="public"
 
 # Set user details
 ENV MAIL_USERNAME="catcher"
