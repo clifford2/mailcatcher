@@ -9,7 +9,7 @@
 # Run with:
 #   docker run -d --rm -p 2525:2525 -p 8080:8080 cliffordw/mailcatcher
 
-FROM alpine:3.9
+FROM docker.io/alpine:3.12
 # https://mailcatcher.me/
 # Based on https://github.com/rordi/docker-mailcatcher
 
@@ -33,8 +33,8 @@ RUN echo "install mailcatcher" \
 	&& set -e \
     && apk add --no-cache ruby ruby-bigdecimal ruby-json libstdc++ sqlite-libs \
     && apk add --no-cache --virtual .build-deps ruby-dev make g++ sqlite-dev \
-    && gem install etc --no-ri --no-rdoc \
-    && gem install mailcatcher --no-ri --no-rdoc \
+    && gem install etc --no-document \
+    && gem install mailcatcher --no-document \
     && apk del .build-deps \
     && rm -rf /tmp/* /var/tmp/* \
 	&& adduser -u $MAIL_USERID -h /home/$MAIL_USERNAME -s /sbin/nologin -D -g 'MailCatcher' $MAIL_USERNAME \
