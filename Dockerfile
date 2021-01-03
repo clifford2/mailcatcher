@@ -9,7 +9,7 @@
 # Run with:
 #   docker run -d --rm -p 2525:2525 -p 8080:8080 cliffordw/mailcatcher
 
-FROM docker.io/alpine:3.12
+FROM docker.io/alpine:3.12.3
 # https://mailcatcher.me/
 # Based on https://github.com/rordi/docker-mailcatcher
 
