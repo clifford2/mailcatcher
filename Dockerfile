@@ -2,16 +2,17 @@
 #
 # Based on [Dietrich Rordorf](https://github.com/rordi/docker-mailcatcher/blob/master/Dockerfile)'s
 # version, and customized to modify the start command, and run as a non-root user.
-#
+
 # Build with:
-#   docker build --pull -t cliffordw/mailcatcher .
+#   docker build --pull -t cliffordw/mailcatcher:$MAILCATCHER_VERSION .
 #
 # Run with:
-#   docker run -d --rm -p 2525:2525 -p 8080:8080 --name mailcatcher cliffordw/mailcatcher
+#   docker run -d --rm -p 2525:2525 -p 8080:8080 --name mailcatcher cliffordw/mailcatcher:$MAILCATCHER_VERSION
 
-FROM docker.io/alpine:3.13.5
-# https://mailcatcher.me/
-# Based on https://github.com/rordi/docker-mailcatcher
+FROM docker.io/library/alpine:3.14.0
+
+# MailCatcher version
+ARG MAILCATCHER_VERSION="0.7.1"
 
 # Image MAINTAINER
 LABEL maintainer="Clifford Weinmann <clifford@weinmann.co.za>"
@@ -34,7 +35,7 @@ RUN echo "install mailcatcher" \
     && apk add --no-cache ruby ruby-bigdecimal ruby-json libstdc++ sqlite-libs \
     && apk add --no-cache --virtual .build-deps ruby-dev make g++ sqlite-dev \
     && gem install etc --no-document \
-    && gem install mailcatcher --no-document \
+    && gem install mailcatcher --version ${MAILCATCHER_VERSION} --no-document \
     && apk del .build-deps \
     && rm -rf /tmp/* /var/tmp/* \
 	&& adduser -u $MAIL_USERID -h /home/$MAIL_USERNAME -s /sbin/nologin -D -g 'MailCatcher' $MAIL_USERNAME \

@@ -13,3 +13,6 @@ To use this, pull the image from Docker Hub, and run with:
 
 Then configure your application to deliver mail to SMTP port 2525, and
 view the caught emails in the web interface at <http://localhost:8080/>.
+
+MailCatcher source code: <https://github.com/sj26/mailcatcher>
+Docker build based on <https://github.com/rordi/docker-mailcatcher>
