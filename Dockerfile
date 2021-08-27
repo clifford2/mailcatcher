@@ -9,7 +9,7 @@
 # Run with:
 #   docker run -d --rm -p 2525:2525 -p 8080:8080 --name mailcatcher cliffordw/mailcatcher:$MAILCATCHER_VERSION
 
-FROM docker.io/library/alpine:3.14.0
+FROM docker.io/library/alpine:3.14.2
 
 # MailCatcher version
 ARG MAILCATCHER_VERSION="0.7.1"
