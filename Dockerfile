@@ -12,7 +12,7 @@
 FROM docker.io/library/alpine:3.14.2
 
 # MailCatcher version
-ARG MAILCATCHER_VERSION="0.7.1"
+ARG MAILCATCHER_VERSION="0.8.1"
 
 # Image MAINTAINER
 LABEL maintainer="Clifford Weinmann <clifford@weinmann.co.za>"
