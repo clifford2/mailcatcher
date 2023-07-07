@@ -9,7 +9,7 @@
 # Run with:
 #   podman run -d --rm -p 2525:2525 -p 8080:8080 --name mailcatcher cliffordw/mailcatcher:$MAILCATCHER_VERSION
 
-FROM docker.io/library/alpine:3.14.6
+FROM docker.io/library/alpine:3.18.2
 
 # MailCatcher version
 ARG MAILCATCHER_VERSION="0.8.2"
