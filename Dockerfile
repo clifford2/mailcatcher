@@ -9,13 +9,13 @@
 # Run with:
 #   podman run -d --rm -p 2525:2525 -p 8080:8080 --name mailcatcher cliffordw/mailcatcher:$MAILCATCHER_VERSION
 
-FROM docker.io/library/alpine:3.18.5
+FROM docker.io/library/alpine:3.19.1
 
 # MailCatcher version
 ARG MAILCATCHER_VERSION="0.9.0"
 
 # Image MAINTAINER
-LABEL maintainer="Clifford Weinmann <clifford@weinmann.co.za>"
+LABEL maintainer="Clifford Weinmann <clifford@weinmann.africa>"
 # How to run this image
 ## label-schema.org format
 LABEL org.label-schema.docker.cmd="docker run -d --rm -p 2525:2525 -p 8080:8080 cliffordw/mailcatcher"
