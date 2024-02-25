@@ -36,7 +36,7 @@ source .env
 git add .
 git commit
 git tag "${MAILCATCHER_VERSION}-${RELEASE_VERSION}"
-git push
+git push --follow-tags
 ``
 
 
