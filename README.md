@@ -16,7 +16,7 @@ non-root user.
 To use this, run the container with:
 
 ```sh
-podman run -d --rm -p 2525:2525 -p 8080:8080 --name mailcatcher docker.io/cliffordw/mailcatcher:0.9.0-release.3
+podman run -d --rm -p 2525:2525 -p 8080:8080 --name mailcatcher docker.io/cliffordw/mailcatcher:0.10.0-release.1
 ```
 
 Then configure your application to deliver mail to SMTP port 2525.
