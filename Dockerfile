@@ -7,11 +7,12 @@
 #
 # History:
 # - 2023-12-04: Upgrade to MailCatcher 0.9.0
-# - 2024-02-25: Upgrade to alpine 3.19
-# - 2024-10-07: Upgrade to MailCatcher 0.10.0; revert to Apline 3.18
-#   to avoid sqlite3 symbol not found errors (see https://github.com/sparklemotion/sqlite3-ruby/issues/434)
+# - 2024-02-25: Upgrade to Alpine 3.19
+# - 2024-10-07: Upgrade to MailCatcher 0.10.0; revert to Alpine 3.18 to avoid sqlite3
+#   symbol not found errors (see https://github.com/sparklemotion/sqlite3-ruby/issues/434)
+# - 2025-01-07: Upgrade to Alpine 3.18.10
 
-FROM docker.io/library/alpine:3.18.9
+FROM docker.io/library/alpine:3.18.10
 
 # MailCatcher version
 ARG MAILCATCHER_VERSION=0.10.0

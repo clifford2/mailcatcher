@@ -42,10 +42,10 @@ git push --follow-tags
 
 ## Run
 
-Run with (replace `podman` with `docker` if preferred):
+Run with podman (replace `podman` with `docker` if preferred): 
 
 ```
-podman run -d --rm -p 2525:2525 -p 8080:8080 --name mailcatcher docker.io/cliffordw/mailcatcher:0.9.0-release.3
+podman run -d --rm -p 2525:2525 -p 8080:8080 --name mailcatcher docker.io/cliffordw/mailcatcher:0.10.0-release.2
 ```
 
 ## Test
