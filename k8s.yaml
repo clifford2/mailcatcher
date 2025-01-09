@@ -1,0 +1,141 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mailcatcher
+  labels:
+    app.kubernetes.io/name: mailcatcher
+    app: mailcatcher
+    project: homelab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mailcatcher
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: mailcatcher
+        app: mailcatcher
+        project: homelab
+    spec:
+      hostNetwork: false
+      hostPID: false
+      hostIPC: false
+      containers:
+      - name: mailcatcher
+        image: docker.io/cliffordw/mailcatcher:0.10.0-release.3
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: smtp
+          containerPort: 2525
+          protocol: TCP
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        startupProbe:
+          tcpSocket:
+            port: 2525
+          initialDelaySeconds: 10
+          failureThreshold: 2
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            port: 8080
+            path: /
+          initialDelaySeconds: 5
+          failureThreshold: 12
+          periodSeconds: 5
+        livenessProbe:
+          tcpSocket:
+            port: 2525
+          initialDelaySeconds: 10
+          failureThreshold: 2
+          periodSeconds: 10
+        resources:
+          requests:
+            memory: 128Mi
+          limits:
+            memory: 256Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - name: mailcatcher-tmp-1
+          mountPath: /tmp
+        securityContext:
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          privileged: false
+          capabilities:
+            drop:
+            - ALL
+          seccompProfile:
+            type: RuntimeDefault
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: mailcatcher-tmp-1
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mailcatcher-http
+  labels:
+    app.kubernetes.io/name: mailcatcher
+    project: homelab
+    app: mailcatcher
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: http
+  selector:
+    app: mailcatcher
+  sessionAffinity: None
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mailcatcher-smtp
+  labels:
+    app.kubernetes.io/name: mailcatcher
+    project: homelab
+    app: mailcatcher
+spec:
+  type: ClusterIP
+  ports:
+  - name: smtp
+    port: 25
+    protocol: TCP
+    targetPort: smtp
+  selector:
+    app: mailcatcher
+  sessionAffinity: None
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mailcatcher-http
+  labels:
+    app.kubernetes.io/name: mailcatcher
+    project: homelab
+    app: mailcatcher
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: mail.example.net
+    http:
+      paths:
+      - backend:
+          service:
+            name: mailcatcher-http
+            port:
+              number: 80
+        path: /
+        pathType: ImplementationSpecific
