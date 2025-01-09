@@ -1,6 +1,6 @@
 # MailCatcher Container Build
 
-This image can easily be built by either `docker` or `podman`.
+This image can easily be built by either `podman` or `docker`.
 
 ## Bump Versions
 
@@ -28,7 +28,7 @@ make CONTAINER_ENGINE=docker build
 
 Publish new source with these commands:
 
-``sh
+```sh
 make git-push
 ```
 
