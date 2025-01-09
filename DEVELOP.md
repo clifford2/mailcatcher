@@ -40,4 +40,4 @@ make docker-push
 
 ## Run & Test
 
-See `README.md`.
+See [`README.md`](README.md).
