@@ -1,0 +1,4 @@
+#!/bin/bash
+# A quick helper for Make to get values from .env
+source ./.env
+echo ${!1}

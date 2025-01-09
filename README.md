@@ -13,19 +13,39 @@ non-root user.
 
 ## Usage
 
-To use this, run the container with:
+### Start the container
+
+To use this, run the container with podman (replace `podman` with `docker`
+if preferred):
 
 ```sh
 podman run -d --rm -p 2525:2525 -p 8080:8080 --name mailcatcher docker.io/cliffordw/mailcatcher:0.10.0-release.3
 ```
 
-Then configure your application to deliver mail to SMTP port 2525.
+### Sending email
 
-You can send a test email with:
+Configure your application to deliver mail to SMTP port 2525.
+
+You can send a test email with our `hello` test script (uses netcat):
 
 ```sh
 podman exec -it mailcatcher hello
 ```
+Additional tools for testing email sending include:
+
+- `socat - TCP4:0.0.0.0:2525`
+- `netcat 0.0.0.0 2525`
+- `telnet 0.0.0.0 2525`
+
+Example commands for socat / netcat:
+
+```sh
+MSG="HELO mailcatcher.example.com\nMAIL FROM: mailcatcher@example.com\nRCPT TO: clifford@example.org\nDATA\nSubject: CLI Test Message\nContent-Type: text/plain\n\nHello Buddy\n\nWhat's up?\n\nRegards,\nMailCatcher\n.\nquit\n"
+echo -e "$MSG" | socat - TCP4:0.0.0.0:2525
+podman exec mailcatcher sh -c "echo -e \"$MSG\" | nc 0.0.0.0 2525
+```
+
+### Web Interface
 
 View the caught emails in the web interface at <http://localhost:8080/>.
 
