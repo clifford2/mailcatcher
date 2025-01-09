@@ -11,8 +11,9 @@
 # - 2024-10-07: Upgrade to MailCatcher 0.10.0; revert to Alpine 3.18 to avoid sqlite3
 #   symbol not found errors (see https://github.com/sparklemotion/sqlite3-ruby/issues/434)
 # - 2025-01-07: Upgrade to Alpine 3.18.10
+# - 2025-01-09: Upgrade to Alpine 3.18.11
 
-FROM docker.io/library/alpine:3.18.10
+FROM docker.io/library/alpine:3.18.11
 
 # MailCatcher version
 ARG MAILCATCHER_VERSION=0.10.0
@@ -30,7 +31,7 @@ RUN echo "Install mailcatcher" \
 	&& set -e \
 	&& apk add --no-cache ruby ruby-bigdecimal ruby-json libstdc++ sqlite-libs netcat-openbsd \
 	&& apk add --no-cache --virtual .build-deps ruby-dev make g++ sqlite-dev \
-	&& gem update --system \
+	&& gem update --system --no-document \
 	&& gem install etc --no-document \
 	&& gem install mailcatcher --version ${MAILCATCHER_VERSION} --no-document \
 	&& apk del .build-deps \

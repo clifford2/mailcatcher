@@ -6,7 +6,7 @@
 which catches any message sent to it to display in a web interface.
 Great for development and testing!
 
-This image is only ~80MB. It is based on
+This image is only ~80 MB. It is based on
 [Dietrich Rordorf](https://hub.docker.com/r/rordi/docker-mailcatcher/)'s
 version, and customized mostly to modify the start command, and run as a
 non-root user.
@@ -16,7 +16,7 @@ non-root user.
 To use this, run the container with:
 
 ```sh
-podman run -d --rm -p 2525:2525 -p 8080:8080 --name mailcatcher docker.io/cliffordw/mailcatcher:0.10.0-release.2
+podman run -d --rm -p 2525:2525 -p 8080:8080 --name mailcatcher docker.io/cliffordw/mailcatcher:0.10.0-release.3
 ```
 
 Then configure your application to deliver mail to SMTP port 2525.
