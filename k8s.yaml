@@ -5,19 +5,24 @@ metadata:
   name: mailcatcher
   labels:
     app.kubernetes.io/name: mailcatcher
+    app.kubernetes.io/instance: mailcatcher-homelab
+    app.kubernetes.io/version: 0.10.0-release.3
     app: mailcatcher
-    project: homelab
+    version: 0.10.0-release.3
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mailcatcher
+      app.kubernetes.io/name: mailcatcher
+      app.kubernetes.io/instance: mailcatcher-homelab
   template:
     metadata:
       labels:
         app.kubernetes.io/name: mailcatcher
+        app.kubernetes.io/instance: mailcatcher-homelab
+        app.kubernetes.io/version: 0.10.0-release.3
         app: mailcatcher
-        project: homelab
+        version: 0.10.0-release.3
     spec:
       hostNetwork: false
       hostPID: false
@@ -84,8 +89,10 @@ metadata:
   name: mailcatcher-http
   labels:
     app.kubernetes.io/name: mailcatcher
-    project: homelab
+    app.kubernetes.io/instance: mailcatcher-homelab
+    app.kubernetes.io/version: 0.10.0-release.3
     app: mailcatcher
+    version: 0.10.0-release.3
 spec:
   type: ClusterIP
   ports:
@@ -94,7 +101,8 @@ spec:
     protocol: TCP
     targetPort: http
   selector:
-    app: mailcatcher
+    app.kubernetes.io/name: mailcatcher
+    app.kubernetes.io/instance: mailcatcher-homelab
   sessionAffinity: None
 
 ---
@@ -104,8 +112,10 @@ metadata:
   name: mailcatcher-smtp
   labels:
     app.kubernetes.io/name: mailcatcher
-    project: homelab
+    app.kubernetes.io/instance: mailcatcher-homelab
+    app.kubernetes.io/version: 0.10.0-release.3
     app: mailcatcher
+    version: 0.10.0-release.3
 spec:
   type: ClusterIP
   ports:
@@ -114,7 +124,8 @@ spec:
     protocol: TCP
     targetPort: smtp
   selector:
-    app: mailcatcher
+    app.kubernetes.io/name: mailcatcher
+    app.kubernetes.io/instance: mailcatcher-homelab
   sessionAffinity: None
 
 ---
@@ -124,8 +135,10 @@ metadata:
   name: mailcatcher-http
   labels:
     app.kubernetes.io/name: mailcatcher
-    project: homelab
+    app.kubernetes.io/instance: mailcatcher-homelab
+    app.kubernetes.io/version: 0.10.0-release.3
     app: mailcatcher
+    version: 0.10.0-release.3
 spec:
   ingressClassName: nginx
   rules:
