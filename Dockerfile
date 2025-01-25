@@ -1,9 +1,9 @@
+# SPDX-FileCopyrightText: © 2016 Dietrich Rordorf <dr@ediqo.com>
+# SPDX-FileContributor: Clifford Weinmann <https://www.cliffordweinmann.com/>
+#
+# SPDX-License-Identifier: MIT
+
 # [Mailcatcher](https://mailcatcher.me/)
-#
-# Based on [Dietrich Rordorf](https://github.com/rordi/docker-mailcatcher/blob/master/Dockerfile)'s
-# version, and customized to modify the start command, and run as a non-root user.
-#
-# Please pass build arg MAILCATCHER_VERSION
 #
 # History:
 # - 2023-12-04: Upgrade to MailCatcher 0.9.0

@@ -1,3 +1,8 @@
 #!/bin/sh
+
+# SPDX-FileCopyrightText: © 2019 Clifford Weinmann <https://www.cliffordweinmann.com/>
+#
+# SPDX-License-Identifier: MIT
+
 # Send a test email
 echo -e "HELO mailcatcher.example.com\nMAIL FROM: mailcatcher@example.com\nRCPT TO: clifford@example.org\nDATA\nSubject: Test Message\nContent-Type: text/plain\n\nHello MailCatcher\n\nWhat's up?\n\nRegards,\n${0}\n.\nquit\n" | nc 0.0.0.0 2525

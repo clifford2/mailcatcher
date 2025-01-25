@@ -1,2 +1,6 @@
+# SPDX-FileCopyrightText: © 2019 Clifford Weinmann <https://www.cliffordweinmann.com/>
+#
+# SPDX-License-Identifier: MIT
+
 /.git
 /mailcatcher-*-src.zip

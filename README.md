@@ -7,9 +7,9 @@ which catches any message sent to it to display in a web interface.
 Great for development and testing!
 
 This image is only ~80 MB. It is based on
-[Dietrich Rordorf](https://hub.docker.com/r/rordi/docker-mailcatcher/)'s
-version, and customized mostly to modify the start command, and run as a
-non-root user.
+[Dietrich Rordorf](https://github.com/rordi/docker-mailcatcher)'s
+version, and customized mostly to modify the start command, run as a
+non-root user, and use specific versions to create immutable images.
 
 ## Usage
 
@@ -56,3 +56,20 @@ View the caught emails in the web interface at <http://localhost:8080/>.
 - Docker build based on <https://github.com/rordi/docker-mailcatcher>
 - `.msmtprc`: Sample config file for [msmtp](https://marlam.de/msmtp/)
 - `ssmtp.conf`: Sample config file for `ssmtp`
+
+## License & Disclaimer
+
+This code is shared under the MIT License.
+
+The original Dockerfile is © 2016 Dietrich Rordorf <dr@ediqo.com>.
+
+Modifications, and all other files are © Clifford Weinmann <https://www.cliffordweinmann.com/>.
+
+This code is provided *AS IS*, without warranty of any kind.
+See [`LICENSES/MIT.txt`](LICENSES/MIT.txt) for the full license text and disclaimer.
+
+## Security
+
+This code is updated as often as possible, but support is provided on a best effort basis only.
+
+Please report any problems or vulnerabilities by opening a [GitHub issue here](https://github.com/clifford2/mailcatcher/issues).

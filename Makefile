@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: © 2019 Clifford Weinmann <https://www.cliffordweinmann.com/>
+#
+# SPDX-License-Identifier: MIT
+
 # Use podman or docker?
 ifeq ($(shell command -v podman 2> /dev/null),)
 	CONTAINER_ENGINE := docker
