@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: © 2019 Clifford Weinmann <https://www.cliffordweinmann.com/>
 #
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: MIT-0
 
 # Use podman or docker?
 ifeq ($(shell command -v podman 2> /dev/null),)
@@ -43,6 +43,7 @@ fixtags:
 .PHONY: build
 build:
 	$(BUILD_CMD) --pull -t $(IMAGE_NAME):$(IMAGE_TAG) .
+	$(CONTAINER_ENGINE) tag $(IMAGE_NAME):$(IMAGE_TAG) $(IMAGE_NAME):latest
 
 .PHONY: git-push
 git-push:
@@ -51,9 +52,10 @@ git-push:
 	@git tag "$(IMAGE_TAG)"
 	@git push --follow-tags
 
-.PHONY: docker-push
-docker-push:
-	podman login docker.io
-	podman push $(IMAGE_NAME):$(IMAGE_TAG)
-	podman tag $(IMAGE_NAME):$(IMAGE_TAG) $(IMAGE_NAME):latest
-	podman push $(IMAGE_NAME):latest
+# No longer required - performed by GitHub Action instead
+# .PHONY: docker-push
+# docker-push:
+#	$(CONTAINER_ENGINE) login docker.io
+#	$(CONTAINER_ENGINE) push $(IMAGE_NAME):$(IMAGE_TAG)
+#	$(CONTAINER_ENGINE) tag $(IMAGE_NAME):$(IMAGE_TAG) $(IMAGE_NAME):latest
+# 	$(CONTAINER_ENGINE) push $(IMAGE_NAME):latest

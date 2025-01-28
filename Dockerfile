@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2016 Dietrich Rordorf <dr@ediqo.com>
 # SPDX-FileContributor: Clifford Weinmann <https://www.cliffordweinmann.com/>
 #
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: MIT-0
 
 # [Mailcatcher](https://mailcatcher.me/)
 #
@@ -19,7 +19,7 @@ FROM docker.io/library/alpine:3.18.11
 ARG MAILCATCHER_VERSION=0.10.0
 
 # Image MAINTAINER
-LABEL maintainer="Clifford Weinmann <clifford@weinmann.africa>"
+LABEL maintainer="Clifford Weinmann <https://www.cliffordweinmann.com/>"
 
 # Set user details
 ARG MAIL_USERNAME="catcher"
