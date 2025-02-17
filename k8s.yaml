@@ -10,9 +10,9 @@ metadata:
   labels:
     app.kubernetes.io/name: mailcatcher
     app.kubernetes.io/instance: mailcatcher-homelab
-    app.kubernetes.io/version: 0.10.0-release.3
+    app.kubernetes.io/version: 0.10.0-4
     app: mailcatcher
-    version: 0.10.0-release.3
+    version: 0.10.0-4
 spec:
   replicas: 1
   selector:
@@ -24,16 +24,16 @@ spec:
       labels:
         app.kubernetes.io/name: mailcatcher
         app.kubernetes.io/instance: mailcatcher-homelab
-        app.kubernetes.io/version: 0.10.0-release.3
+        app.kubernetes.io/version: 0.10.0-4
         app: mailcatcher
-        version: 0.10.0-release.3
+        version: 0.10.0-4
     spec:
       hostNetwork: false
       hostPID: false
       hostIPC: false
       containers:
       - name: mailcatcher
-        image: docker.io/cliffordw/mailcatcher:0.10.0-release.3
+        image: docker.io/cliffordw/mailcatcher:0.10.0-4
         imagePullPolicy: IfNotPresent
         ports:
         - name: smtp
@@ -94,9 +94,9 @@ metadata:
   labels:
     app.kubernetes.io/name: mailcatcher
     app.kubernetes.io/instance: mailcatcher-homelab
-    app.kubernetes.io/version: 0.10.0-release.3
+    app.kubernetes.io/version: 0.10.0-4
     app: mailcatcher
-    version: 0.10.0-release.3
+    version: 0.10.0-4
 spec:
   type: ClusterIP
   ports:
@@ -117,9 +117,9 @@ metadata:
   labels:
     app.kubernetes.io/name: mailcatcher
     app.kubernetes.io/instance: mailcatcher-homelab
-    app.kubernetes.io/version: 0.10.0-release.3
+    app.kubernetes.io/version: 0.10.0-4
     app: mailcatcher
-    version: 0.10.0-release.3
+    version: 0.10.0-4
 spec:
   type: ClusterIP
   ports:
@@ -140,9 +140,9 @@ metadata:
   labels:
     app.kubernetes.io/name: mailcatcher
     app.kubernetes.io/instance: mailcatcher-homelab
-    app.kubernetes.io/version: 0.10.0-release.3
+    app.kubernetes.io/version: 0.10.0-4
     app: mailcatcher
-    version: 0.10.0-release.3
+    version: 0.10.0-4
 spec:
   ingressClassName: nginx
   rules:

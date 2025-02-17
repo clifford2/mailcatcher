@@ -12,8 +12,9 @@
 #   symbol not found errors (see https://github.com/sparklemotion/sqlite3-ruby/issues/434)
 # - 2025-01-07: Upgrade to Alpine 3.18.10
 # - 2025-01-09: Upgrade to Alpine 3.18.11
+# - 2025-02-17: Upgrade to Alpine 3.18.12
 
-FROM docker.io/library/alpine:3.18.11
+FROM docker.io/library/alpine:3.18.12
 
 # MailCatcher version
 ARG MAILCATCHER_VERSION=0.10.0

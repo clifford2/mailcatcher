@@ -9,8 +9,7 @@ else
 	CONTAINER_ENGINE := podman
 endif
 
-# Get current EYE version
-PWD := $(shell pwd)
+# Configure build commands
 ifeq ($(CONTAINER_ENGINE),podman)
 	BUILDARCH := $(shell podman version --format '{{.Client.OsArch}}' | cut -d/ -f2)
 	BUILD_NOLOAD := podman build
@@ -20,6 +19,7 @@ else
 	BUILD_NOLOAD := docker buildx build
 	BUILD_CMD := $(BUILD_NOLOAD) --load
 endif
+# Get current versions
 MAILCATCHER_VERSION := $(shell bash ./getenv MAILCATCHER_VERSION)
 RELEASE_VERSION := $(shell bash ./getenv RELEASE_VERSION)
 IMAGE_NAME := $(shell bash ./getenv IMAGE_NAME)
@@ -37,6 +37,7 @@ fixtags:
 	sed -i -e "s|^ARG MAILCATCHER_VERSION=..*$$|ARG MAILCATCHER_VERSION=$(MAILCATCHER_VERSION)|" Dockerfile
 	sed -i -e "s|^podman run \(..*\) $(IMAGE_NAME):..*$$|podman run \1 $(IMAGE_NAME):$(IMAGE_TAG)|" README.md
 	sed -i -e "s|image: $(IMAGE_NAME):..*$$|image: $(IMAGE_NAME):$(IMAGE_TAG)|" docker-compose.yml
+	sed -i -e "s|image: $(IMAGE_NAME):..*$$|image: $(IMAGE_NAME):$(IMAGE_TAG)|" k8s.yaml
 	sed -i -e "s|version: ..*$$|version: $(IMAGE_TAG)|" k8s.yaml
 	echo "$(IMAGE_TAG)" > .version
 
@@ -44,6 +45,17 @@ fixtags:
 build:
 	$(BUILD_CMD) --pull -t $(IMAGE_NAME):$(IMAGE_TAG) .
 	$(CONTAINER_ENGINE) tag $(IMAGE_NAME):$(IMAGE_TAG) $(IMAGE_NAME):latest
+
+.PHONY: run
+run:
+	$(CONTAINER_ENGINE) run -d --rm -p 2525:2525 -p 8080:8080 --name mailcatcher --replace=true $(IMAGE_NAME):$(IMAGE_TAG)
+	@sleep 2
+	$(CONTAINER_ENGINE) exec -it mailcatcher hello 
+	@echo "Web interface: http://0.0.0.0:8080/"
+
+.PHONY: stop
+stop:
+	@$(CONTAINER_ENGINE) stop mailcatcher
 
 .PHONY: git-push
 git-push:
