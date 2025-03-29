@@ -39,7 +39,6 @@ fixtags:
 	sed -i -e "s|image: $(IMAGE_NAME):..*$$|image: $(IMAGE_NAME):$(IMAGE_TAG)|" docker-compose.yml
 	sed -i -e "s|image: $(IMAGE_NAME):..*$$|image: $(IMAGE_NAME):$(IMAGE_TAG)|" k8s.yaml
 	sed -i -e "s|version: ..*$$|version: $(IMAGE_TAG)|" k8s.yaml
-	echo "$(IMAGE_TAG)" > .version
 
 .PHONY: build
 build:

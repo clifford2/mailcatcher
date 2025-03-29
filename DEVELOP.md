@@ -32,11 +32,7 @@ Publish new source with these commands:
 make git-push
 ```
 
-Publish the container image to Docker Hub with:
-
-```sh
-make docker-push
-```
+No need to publish the container image to Docker Hub (`make docker-push`) - this is done by GitHub Actions.
 
 ## Run & Test
 
