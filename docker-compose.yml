@@ -15,7 +15,7 @@ services:
   ## Mailcatcher, for testing email features (DEV ONLY)
   # This service is used in DEV only
   mailcatcher:
-    image: docker.io/cliffordw/mailcatcher:0.10.0-4
+    image: docker.io/cliffordw/mailcatcher:0.10.0-6
     networks:
       your-network:
     ports:

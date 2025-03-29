@@ -6,7 +6,7 @@
 which catches any message sent to it to display in a web interface.
 Great for development and testing!
 
-This image is only ~80 MB. It is based on
+This image is only ~75 MB. It is based on
 [Dietrich Rordorf](https://github.com/rordi/docker-mailcatcher)'s
 version, and customized mostly to modify the start command, run as a
 non-root user, and use specific versions to create immutable images.
@@ -19,7 +19,7 @@ To use this, run the container with podman (replace `podman` with `docker`
 if preferred):
 
 ```sh
-podman run -d --rm -p 2525:2525 -p 8080:8080 --name mailcatcher docker.io/cliffordw/mailcatcher:0.10.0-4
+podman run -d --rm -p 2525:2525 -p 8080:8080 --name mailcatcher docker.io/cliffordw/mailcatcher:0.10.0-6
 ```
 
 ### Sending email

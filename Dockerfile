@@ -43,8 +43,10 @@ RUN echo "Install mailcatcher" \
 	&& gem install etc --no-document \
 	&& gem install rack --version 2.2.13 --no-document \
 	&& gem install mailcatcher --version ${MAILCATCHER_VERSION} --no-document \
+	&& gem sources --clear-all \
 	&& apk del .build-deps \
 	&& rm -rf /tmp/* /var/tmp/* \
+	&& rm -rf /usr/lib/ruby/gems/*/cache/ \
 	&& adduser -u $MAIL_USERID -h /home/$MAIL_USERNAME -s /sbin/nologin -D -g 'MailCatcher' $MAIL_USERNAME \
 	&& sed -i -e 's/^root::/root:!:/' /etc/shadow
 # Last step is to remove null root password if present (CVE-2019-5021)
