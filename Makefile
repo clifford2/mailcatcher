@@ -60,7 +60,7 @@ stop:
 git-push:
 	@git add .
 	@git commit
-	@git tag "$(IMAGE_TAG)"
+	@git tag -m "Version $(IMAGE_TAG)" $(IMAGE_TAG)
 	@git push --follow-tags
 
 # No longer required - performed by GitHub Action instead
