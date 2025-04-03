@@ -57,13 +57,13 @@ stop:
 	@$(CONTAINER_ENGINE) stop mailcatcher
 
 .PHONY: git-push
-git-push:
+git-push: fixtags
 	@git add .
 	@git commit
 	@git tag -m "Version $(IMAGE_TAG)" $(IMAGE_TAG)
 	@git push --follow-tags
 
-# No longer required - performed by GitHub Action instead
+# No longer required - pushed to both GitHub Container Registry & Docker Hub by GitHub Action instead
 # .PHONY: docker-push
 # docker-push:
 #	$(CONTAINER_ENGINE) login docker.io

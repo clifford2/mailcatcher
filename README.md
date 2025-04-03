@@ -6,20 +6,23 @@
 which catches any message sent to it to display in a web interface.
 Great for development and testing!
 
+This code packages MailCatcher as a container image.
 This image is only ~75 MB. It is based on
 [Dietrich Rordorf](https://github.com/rordi/docker-mailcatcher)'s
-version, and customized mostly to modify the start command, run as a
-non-root user, and use specific versions to create immutable images.
+Dockerfile, and customized to:
+
+- Modify the start command
+- Run as a non-root user
+- Pin software versions to create immutable images
 
 ## Usage
 
 ### Start the container
 
-To use this, run the container with podman (replace `podman` with `docker`
-if preferred):
+To use this, run the container with `podman` (or replace `podman` with `docker` if preferred):
 
 ```sh
-podman run -d --rm -p 2525:2525 -p 8080:8080 --name mailcatcher docker.io/cliffordw/mailcatcher:0.10.0-6
+podman run -d --rm -p 2525:2525 -p 8080:8080 --name mailcatcher ghcr.io/clifford2/mailcatcher:0.10.0-7
 ```
 
 ### Sending email
@@ -52,7 +55,9 @@ View the caught emails in the web interface at <http://localhost:8080/>.
 ## Resources
 
 - MailCatcher source code: <https://github.com/sj26/mailcatcher>
-- Container image available at: <https://hub.docker.com/r/cliffordw/mailcatcher>
+- Container image available at:
+	- [`ghcr.io/clifford2/mailcatcher`](https://github.com/clifford2/mailcatcher/pkgs/container/mailcatcher)
+	- [`docker.io/cliffordw/mailcatcher`[(https://hub.docker.com/r/cliffordw/mailcatcher)
 - Docker build based on <https://github.com/rordi/docker-mailcatcher>
 - `.msmtprc`: Sample config file for [msmtp](https://marlam.de/msmtp/)
 - `ssmtp.conf`: Sample config file for `ssmtp`

@@ -7,8 +7,8 @@ name: Publish Container Image
 on:
   workflow_dispatch:
   push:
-    branches:
-      - 'main'
+  # branches:
+  #   - 'main'
     tags:
       - '*'
   # pull_request:
@@ -69,6 +69,7 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Build and push to GHCR
+        id: githubpush
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -77,9 +78,25 @@ jobs:
           labels: ${{ steps.githubmeta.outputs.labels }}
 
       - name: Push to Docker Hub
+        id: dockerpush
         uses: docker/build-push-action@v5
         with:
           context: .
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.dockermeta.outputs.tags }}
           labels: ${{ steps.dockermeta.outputs.labels }}
+
+      # This step generates an artifact attestation for the image, which is an unforgeable statement about where and how it was built. It increases supply chain security for people who consume the image. For more information, see [Using artifact attestations to establish provenance for builds](/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds).
+      - name: Generate artifact attestation for GHCR image
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
+          subject-digest: ${{ steps.githubpush.outputs.digest }}
+          push-to-registry: true
+
+      - name: Generate artifact attestation for Docker Hub image
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/mailcatcher
+          subject-digest: ${{ steps.dockerpush.outputs.digest }}
+          push-to-registry: true
