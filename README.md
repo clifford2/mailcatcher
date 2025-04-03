@@ -22,7 +22,7 @@ Dockerfile, and customized to:
 To use this, run the container with `podman` (or replace `podman` with `docker` if preferred):
 
 ```sh
-podman run -d --rm -p 2525:2525 -p 8080:8080 --name mailcatcher ghcr.io/clifford2/mailcatcher:0.10.0-7
+podman run -d --rm -p 2525:2525 -p 8080:8080 --name mailcatcher ghcr.io/clifford2/mailcatcher:0.10.0-8
 ```
 
 ### Sending email
@@ -57,7 +57,7 @@ View the caught emails in the web interface at <http://localhost:8080/>.
 - MailCatcher source code: <https://github.com/sj26/mailcatcher>
 - Container image available at:
 	- [`ghcr.io/clifford2/mailcatcher`](https://github.com/clifford2/mailcatcher/pkgs/container/mailcatcher)
-	- [`docker.io/cliffordw/mailcatcher`[(https://hub.docker.com/r/cliffordw/mailcatcher)
+	- [`docker.io/cliffordw/mailcatcher`](https://hub.docker.com/r/cliffordw/mailcatcher)
 - Docker build based on <https://github.com/rordi/docker-mailcatcher>
 - `.msmtprc`: Sample config file for [msmtp](https://marlam.de/msmtp/)
 - `ssmtp.conf`: Sample config file for `ssmtp`
