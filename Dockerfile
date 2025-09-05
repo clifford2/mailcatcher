@@ -14,6 +14,7 @@
 # - 2025-01-09: Upgrade to Alpine 3.18.11
 # - 2025-02-17: Upgrade to Alpine 3.18.12
 # - 2025-03-29: Upgrade rack to ~> 2.2.13 to address CVE-2025-27610
+# - 2025-09-05: Upgrade base image to Alpine 3.22
 
 
 ### MailCatcher version ###
@@ -21,7 +22,7 @@ ARG MAILCATCHER_VERSION=0.10.0
 
 
 ### Build final image ###
-FROM docker.io/library/alpine:3.18.12
+FROM docker.io/library/alpine:3.22.1
 ARG MAILCATCHER_VERSION
 
 # Image labels
@@ -37,10 +38,10 @@ ARG MAIL_USERID="8143"
 # "gem install rack" isn't usually required, as it is in mailcatcher.gemspec, but we want a specific version to resolve CVE-2025-27610
 RUN echo "Install mailcatcher" \
 	&& set -e \
-	&& apk add --no-cache ruby ruby-bigdecimal ruby-json libstdc++ sqlite-libs netcat-openbsd \
+	&& apk add --no-cache ruby ruby-bigdecimal libstdc++ sqlite-libs netcat-openbsd \
 	&& apk add --no-cache --virtual .build-deps ruby-dev make g++ sqlite-dev \
 	&& gem update --system --no-document \
-	&& gem install etc --no-document \
+	&& gem install json etc --no-document \
 	&& gem install rack --version 2.2.13 --no-document \
 	&& gem install mailcatcher --version ${MAILCATCHER_VERSION} --no-document \
 	&& gem sources --clear-all \

@@ -22,7 +22,7 @@ Dockerfile, and customized to:
 To use this, run the container with `podman` (or replace `podman` with `docker` if preferred):
 
 ```sh
-podman run -d --rm -p 2525:2525 -p 8080:8080 --name mailcatcher ghcr.io/clifford2/mailcatcher:0.10.0-8
+podman run -d --rm -p 2525:2525 -p 8080:8080 --name mailcatcher ghcr.io/clifford2/mailcatcher:0.10.0-9
 ```
 
 ### Sending email

@@ -51,6 +51,7 @@ run:
 	@sleep 2
 	$(CONTAINER_ENGINE) exec -it mailcatcher hello 
 	@echo "Web interface: http://0.0.0.0:8080/"
+	@command -v xdg-open > /dev/null && (xdg-open http://0.0.0.0:8080/ 2>/dev/null)
 
 .PHONY: stop
 stop:
