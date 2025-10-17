@@ -26,8 +26,8 @@ IMAGE_NAME := $(shell bash ./getenv IMAGE_NAME)
 IMAGE_TAG := $(shell bash ./getenv IMAGE_TAG)
 
 
-.PHONY: hello
-hello:
+.PHONY: none
+none:
 	@echo "There is no default target for $(IMAGE_NAME):$(IMAGE_TAG) yet - please pick a suitable target manually"
 	@echo "We're using $(CONTAINER_ENGINE) on $(BUILDARCH)"
 
@@ -52,6 +52,10 @@ run:
 	$(CONTAINER_ENGINE) exec -it mailcatcher hello 
 	@echo "Web interface: http://0.0.0.0:8080/"
 	@command -v xdg-open > /dev/null && (xdg-open http://0.0.0.0:8080/ 2>/dev/null)
+
+.PHONY: hello
+hello:
+	$(CONTAINER_ENGINE) exec -it mailcatcher hello 
 
 .PHONY: stop
 stop:

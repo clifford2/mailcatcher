@@ -10,9 +10,9 @@ metadata:
   labels:
     app.kubernetes.io/name: mailcatcher
     app.kubernetes.io/instance: mailcatcher-homelab
-    app.kubernetes.io/version: 0.10.0-9
+    app.kubernetes.io/version: 0.10.0-10
     app: mailcatcher
-    version: 0.10.0-9
+    version: 0.10.0-10
 spec:
   replicas: 1
   selector:
@@ -24,9 +24,9 @@ spec:
       labels:
         app.kubernetes.io/name: mailcatcher
         app.kubernetes.io/instance: mailcatcher-homelab
-        app.kubernetes.io/version: 0.10.0-9
+        app.kubernetes.io/version: 0.10.0-10
         app: mailcatcher
-        version: 0.10.0-9
+        version: 0.10.0-10
     spec:
       hostNetwork: false
       hostPID: false
@@ -94,9 +94,9 @@ metadata:
   labels:
     app.kubernetes.io/name: mailcatcher
     app.kubernetes.io/instance: mailcatcher-homelab
-    app.kubernetes.io/version: 0.10.0-9
+    app.kubernetes.io/version: 0.10.0-10
     app: mailcatcher
-    version: 0.10.0-9
+    version: 0.10.0-10
 spec:
   type: ClusterIP
   ports:
@@ -117,9 +117,9 @@ metadata:
   labels:
     app.kubernetes.io/name: mailcatcher
     app.kubernetes.io/instance: mailcatcher-homelab
-    app.kubernetes.io/version: 0.10.0-9
+    app.kubernetes.io/version: 0.10.0-10
     app: mailcatcher
-    version: 0.10.0-9
+    version: 0.10.0-10
 spec:
   type: ClusterIP
   ports:
@@ -140,9 +140,9 @@ metadata:
   labels:
     app.kubernetes.io/name: mailcatcher
     app.kubernetes.io/instance: mailcatcher-homelab
-    app.kubernetes.io/version: 0.10.0-9
+    app.kubernetes.io/version: 0.10.0-10
     app: mailcatcher
-    version: 0.10.0-9
+    version: 0.10.0-10
 spec:
   ingressClassName: nginx
   rules:
