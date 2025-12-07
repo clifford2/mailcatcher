@@ -50,8 +50,8 @@ COPY hello /usr/local/bin/hello
 RUN sed -i -e "s|{{MAILCATCHER_VERSION}}|${MAILCATCHER_VERSION}|" /usr/local/bin/hello
 
 
-### Final image ###
-FROM base as semifinal
+### Final content for image ###
+FROM base AS semifinal
 
 # Add user account
 ARG MAIL_USERNAME
@@ -74,7 +74,7 @@ COPY --chmod=0644 ssmtp.conf /etc/ssmtp/ssmtp.conf
 RUN rm -rf /tmp/* /var/tmp/* /var/log/* || true
 
 
-### Really Really Final ###
+### Really Final ###
 FROM scratch
 
 # Expose ports

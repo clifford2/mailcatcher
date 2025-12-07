@@ -66,15 +66,15 @@ build:
 
 .PHONY: tag
 tag: .check-depends
-	test -z "$(REPOBASE)" && echo "Please specify REPOBASE" && exit 1
+	test ! -z "$(REPOBASE)" || (echo "Please specify REPOBASE" && false)
 	$(CONTAINER_ENGINE) tag $(IMAGE_NAME):$(IMAGE_TAG) $(IMGRELNAME):$(IMAGE_TAG)
 	$(CONTAINER_ENGINE) tag $(IMAGE_NAME):$(IMAGE_TAG) $(IMGRELNAME):$(MAILCATCHER_VERSION)
 	$(CONTAINER_ENGINE) tag $(IMAGE_NAME):$(IMAGE_TAG) $(IMGRELNAME):latest
 
 .PHONY: push
 push: tag
-	test ! -z "$(REGISTRY_NAME)" && $(CONTAINER_ENGINE) login -u $(REGISTRY_USER) $(REGISTRY_NAME)|| echo 'Not logging into registry'
-	test -z "$(REPOBASE)" && echo "Please specify REPOBASE" && exit 1
+	test ! -z "$(REPOBASE)" || (echo "Please specify REPOBASE" && false)
+	test ! -z "$(REGISTRY_NAME)" && $(CONTAINER_ENGINE) login -u $(REGISTRY_USER) $(REGISTRY_NAME) || echo 'Not logging into registry'
 	$(CONTAINER_ENGINE) push $(IMGRELNAME):$(IMAGE_TAG)
 	$(CONTAINER_ENGINE) push $(IMGRELNAME):$(MAILCATCHER_VERSION)
 	$(CONTAINER_ENGINE) push $(IMGRELNAME):latest
