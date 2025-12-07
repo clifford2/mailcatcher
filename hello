@@ -1,8 +1,32 @@
 #!/bin/sh
 
 # SPDX-FileCopyrightText: © 2019 Clifford Weinmann <https://www.cliffordweinmann.com/>
-#
 # SPDX-License-Identifier: MIT-0
 
-# Send a test email
-echo -e "HELO mailcatcher.example.com\nMAIL FROM: mailcatcher@example.com\nRCPT TO: clifford@example.org\nDATA\nSubject: Test Message\nContent-Type: text/plain\n\nHello MailCatcher\n\nWhat's up?\n\nRegards,\n${0}\n.\nquit\n" | nc 0.0.0.0 2525
+format=${1:-html}
+if [ "${format}" = "html" ]
+then
+	nc 0.0.0.0 2525 <<- EMAIL
+	HELO mailcatcher.example.com
+	MAIL FROM: mailcatcher@example.com
+	RCPT TO: clifford@example.org
+	DATA
+	Subject: Test Message
+	Content-Type: text/html
+	
+	<p>Hello <strong>MailCatcher</strong>,</p>
+	
+	<p>Welcome to your very own instance of
+	<a href="https://mailcatcher.me/">mailcatcher.me</a>
+	version {{MAILCATCHER_VERSION}}!</p>
+	
+	<p>Kind regards,</p>
+	
+	<p>Your testing script, <code>${0}</code></p>
+	.
+	quit
+	EMAIL
+else
+	# default to plain text
+	echo -e "HELO mailcatcher.example.com\nMAIL FROM: mailcatcher@example.com\nRCPT TO: clifford@example.org\nDATA\nSubject: Test Message\nContent-Type: text/plain\n\nHello MailCatcher\n\nWhat's up?\n\nRegards,\n${0}\n.\nquit\n" | nc 0.0.0.0 2525
+fi

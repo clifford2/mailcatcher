@@ -1,0 +1,58 @@
+---
+# SPDX-FileCopyrightText: © 2019 Clifford Weinmann <https://www.cliffordweinmann.com/>
+# SPDX-License-Identifier: MIT-0
+
+name: "Publish Container Image"
+
+on:
+  workflow_dispatch:
+  push:
+  # branches:
+  #   - 'main'
+    tags:
+      - '*'
+  # pull_request:
+  #   branches:
+  #     - 'main'
+
+env:
+  REGISTRY: "ghcr.io"
+  REPOBASE: "ghcr.io/${{ github.repository_owner }}"
+  DOCKER_REPOBASE: "docker.io/cliffordw"
+
+jobs:
+  docker:
+    runs-on: "ubuntu-24.04"
+
+    permissions:
+      contents: "read"
+      packages: "write"
+      attestations: "write"
+      id-token: "write"
+
+    steps:
+
+      - name: "Checkout"
+        uses: "actions/checkout@v4"
+
+      - name: "Log in to GitHub container registry"
+        uses: "docker/login-action@v3"
+        with:
+          registry: "${{ env.REGISTRY }}"
+          username: "${{ github.actor }}"
+          password: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: "Log in to Docker Hub"
+        if: github.event_name != 'pull_request'
+        uses: "docker/login-action@v3"
+        with:
+          username: "${{ secrets.DOCKERHUB_USERNAME }}"
+          password: "${{ secrets.DOCKERHUB_TOKEN }}"
+
+      # Use a Makefile to build & push the image
+      - name: "Build & push container image"
+        id: "build"
+        run: |
+          make CONTAINER_ENGINE=docker build
+          make CONTAINER_ENGINE=docker REPOBASE=${{ env.REPOBASE }} push
+          make CONTAINER_ENGINE=docker REPOBASE=${{ env.DOCKER_REPOBASE }} push

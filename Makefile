@@ -23,39 +23,73 @@ endif
 MAILCATCHER_VERSION := $(shell bash ./getenv MAILCATCHER_VERSION)
 RELEASE_VERSION := $(shell bash ./getenv RELEASE_VERSION)
 IMAGE_NAME := $(shell bash ./getenv IMAGE_NAME)
+
+# Add date into release version to distinguish between image differences resulting from `apk update` & `apk upgrade` steps
 IMAGE_TAG := $(shell bash ./getenv IMAGE_TAG)
+GIT_REVISION := $(shell git rev-parse @)
+BUILD_DATE := $(shell TZ=UTC date '+%Y-%m-%d')
+BUILD_TIME := $(shell TZ=UTC date '+%Y-%m-%dT%H:%M:%SZ')
+
+# REGISTRY_NAME := ghcr.io
+# REGISTRY_USER := clifford2
+# REPOBASE := $(REGISTRY_NAME)/$(REGISTRY_USER)
+IMGRELNAME := $(REPOBASE)/$(IMAGE_NAME)
+
+# Port numbers
+UID := $(shell id -u)
+ifeq ($(UID),0)
+	SMTP_PORT := 587
+else
+	SMTP_PORT := 2525
+endif
+HTTP_PORT := 8080
 
 
-.PHONY: none
-none:
+.PHONY: help
+help:
 	@echo "There is no default target for $(IMAGE_NAME):$(IMAGE_TAG) yet - please pick a suitable target manually"
 	@echo "We're using $(CONTAINER_ENGINE) on $(BUILDARCH)"
+	@echo "SMTP PORT: $(SMTP_PORT)"
 
 # After any changing .env, fix the image tags in other files
 .PHONY: fixtags
 fixtags:
-	sed -i -e "s|^ARG MAILCATCHER_VERSION=..*$$|ARG MAILCATCHER_VERSION=$(MAILCATCHER_VERSION)|" Dockerfile
-	sed -i -e "s|^podman run \(..*\) $(IMAGE_NAME):..*$$|podman run \1 $(IMAGE_NAME):$(IMAGE_TAG)|" README.md
+	sed -i -e "s|$(IMAGE_NAME):..*$$|$(IMAGE_NAME):$(IMAGE_TAG)|" README.md
 	sed -i -e "s|image: $(IMAGE_NAME):..*$$|image: $(IMAGE_NAME):$(IMAGE_TAG)|" docker-compose.yml
 	sed -i -e "s|image: $(IMAGE_NAME):..*$$|image: $(IMAGE_NAME):$(IMAGE_TAG)|" k8s.yaml
 	sed -i -e "s|version: ..*$$|version: $(IMAGE_TAG)|" k8s.yaml
 
 .PHONY: build
 build:
-	$(BUILD_CMD) --pull -t $(IMAGE_NAME):$(IMAGE_TAG) .
+	$(BUILD_CMD) --pull --build-arg MAILCATCHER_VERSION=$(MAILCATCHER_VERSION) --build-arg APP_VERSION=$(IMAGE_TAG) --build-arg BUILD_DATE=$(BUILD_DATE) --build-arg BUILD_TIME=$(BUILD_TIME) -t $(IMAGE_NAME):$(IMAGE_TAG) .
 	$(CONTAINER_ENGINE) tag $(IMAGE_NAME):$(IMAGE_TAG) $(IMAGE_NAME):latest
+
+.PHONY: tag
+tag: .check-depends
+	test -z "$(REPOBASE)" && echo "Please specify REPOBASE" && exit 1
+	$(CONTAINER_ENGINE) tag $(IMAGE_NAME):$(IMAGE_TAG) $(IMGRELNAME):$(IMAGE_TAG)
+	$(CONTAINER_ENGINE) tag $(IMAGE_NAME):$(IMAGE_TAG) $(IMGRELNAME):$(MAILCATCHER_VERSION)
+	$(CONTAINER_ENGINE) tag $(IMAGE_NAME):$(IMAGE_TAG) $(IMGRELNAME):latest
+
+.PHONY: push
+push: tag
+	test ! -z "$(REGISTRY_NAME)" && $(CONTAINER_ENGINE) login -u $(REGISTRY_USER) $(REGISTRY_NAME)|| echo 'Not logging into registry'
+	test -z "$(REPOBASE)" && echo "Please specify REPOBASE" && exit 1
+	$(CONTAINER_ENGINE) push $(IMGRELNAME):$(IMAGE_TAG)
+	$(CONTAINER_ENGINE) push $(IMGRELNAME):$(MAILCATCHER_VERSION)
+	$(CONTAINER_ENGINE) push $(IMGRELNAME):latest
 
 .PHONY: run
 run:
-	$(CONTAINER_ENGINE) run -d --rm -p 2525:2525 -p 8080:8080 --name mailcatcher --replace=true $(IMAGE_NAME):$(IMAGE_TAG)
+	$(CONTAINER_ENGINE) run -d --rm -p $(SMTP_PORT):2525 -p $(HTTP_PORT):8080 --name mailcatcher --replace=true $(IMAGE_NAME):$(IMAGE_TAG)
 	@sleep 2
-	$(CONTAINER_ENGINE) exec -it mailcatcher hello 
-	@echo "Web interface: http://0.0.0.0:8080/"
-	@command -v xdg-open > /dev/null && (xdg-open http://0.0.0.0:8080/ 2>/dev/null)
+	$(CONTAINER_ENGINE) exec -it mailcatcher hello
+	@echo "Web interface: http://0.0.0.0:$(HTTP_PORT)/"
+	@command -v xdg-open > /dev/null && (xdg-open http://0.0.0.0:$(HTTP_PORT)/ 2>/dev/null) || true
 
 .PHONY: hello
 hello:
-	$(CONTAINER_ENGINE) exec -it mailcatcher hello 
+	$(CONTAINER_ENGINE) exec -it mailcatcher hello
 
 .PHONY: stop
 stop:
@@ -68,10 +102,7 @@ git-push: fixtags
 	@git tag -m "Version $(IMAGE_TAG)" $(IMAGE_TAG)
 	@git push --follow-tags
 
-# No longer required - pushed to both GitHub Container Registry & Docker Hub by GitHub Action instead
-# .PHONY: docker-push
-# docker-push:
-#	$(CONTAINER_ENGINE) login docker.io
-#	$(CONTAINER_ENGINE) push $(IMAGE_NAME):$(IMAGE_TAG)
-#	$(CONTAINER_ENGINE) tag $(IMAGE_NAME):$(IMAGE_TAG) $(IMAGE_NAME):latest
-# 	$(CONTAINER_ENGINE) push $(IMAGE_NAME):latest
+# Verify that we have all required dependencies installed
+.PHONY: .check-depends
+.check-depends:
+	command -v podman || command -v docker

@@ -17,49 +17,86 @@
 # - 2025-09-05: Upgrade base image to Alpine 3.22.1
 # - 2025-10-17: Upgrade base image to Alpine 3.22.2
 # - 2025-10-17: Upgrade rack gem to latest 2.2 patch version
+# - 2025-12-07: Upgrade base image to Alpine 3.23.0
 
-
-### MailCatcher version ###
-ARG MAILCATCHER_VERSION=0.10.0
-
-
-### Build final image ###
-FROM docker.io/library/alpine:3.22.2
-ARG MAILCATCHER_VERSION
-
-# Image labels
-LABEL maintainer="Clifford Weinmann <https://www.cliffordweinmann.com/>"
-LABEL org.opencontainers.image.source="https://github.com/clifford2/mailcatcher"
-
-# Add user account
 ARG MAIL_USERNAME="catcher"
-ARG MAIL_USERID="8143"
-RUN echo "Create user" \
-	&& adduser -u $MAIL_USERID -h /home/$MAIL_USERNAME -s /sbin/nologin -D -g 'MailCatcher' $MAIL_USERNAME \
-	&& sed -i -e 's/^root::/root:!:/' /etc/shadow
-# Last step is to remove null root password if present (CVE-2019-5021)
+ARG MAIL_USERID="9587"
 
+### Base image ###
+FROM docker.io/library/alpine:3.23.0 AS base
+RUN apk add --no-cache ruby ruby-bigdecimal libstdc++ sqlite-libs
+# BUILD_DATE should break old caches of the update & upgrade layer
+ARG BUILD_DATE
+RUN echo "${BUILD_DATE}" && apk --no-cache update && apk --no-cache upgrade
+
+
+### Image for building mailcatcher ###
+FROM base AS builder
+ARG MAILCATCHER_VERSION
 # Set exit on error flag, install ruby deps, build MailCatcher, remove build deps, add user
 # gem install sqlite3 -v 1.7.3 --platform=ruby --no-document
 # "gem install rack" isn't usually required, as it is in mailcatcher.gemspec, but we want version 2.2.13 to resolve CVE-2025-27610
 RUN echo "Install MailCatcher" \
 	&& set -e \
-	&& apk add --no-cache ruby ruby-bigdecimal libstdc++ sqlite-libs netcat-openbsd \
-	&& apk add --no-cache --virtual .build-deps ruby-dev make g++ sqlite-dev \
+	&& apk add --no-cache ruby-dev make g++ sqlite-dev \
 	&& gem update --system --no-document \
 	&& gem install json etc --no-document \
 	&& gem install rack --version '~> 2.2, >= 2.2.13' --no-document \
 	&& gem install mailcatcher --version ${MAILCATCHER_VERSION} --no-document \
 	&& gem sources --clear-all \
-	&& apk del .build-deps \
-	&& rm -rf /tmp/* /var/tmp/* \
 	&& rm -rf /usr/lib/ruby/gems/*/cache/
 
-ADD --chmod=0755 hello /usr/local/bin/hello
+COPY hello /usr/local/bin/hello
+RUN sed -i -e "s|{{MAILCATCHER_VERSION}}|${MAILCATCHER_VERSION}|" /usr/local/bin/hello
+
+
+### Final image ###
+FROM base as semifinal
+
+# Add user account
+ARG MAIL_USERNAME
+ARG MAIL_USERID
+RUN echo "Create user" \
+	&& adduser -u $MAIL_USERID -h /home/$MAIL_USERNAME -s /sbin/nologin -D -g 'MailCatcher' $MAIL_USERNAME \
+	&& sed -i -e 's/^root::/root:!:/' /etc/shadow
+# Last step is to remove null root password if present (CVE-2019-5021)
+
+# Add tools for sending mail
+RUN apk add --no-cache netcat-openbsd ssmtp
+
+# Copy code from builder stage
+COPY --from=builder --chmod=0755 /usr/local/bin/hello /usr/local/bin/hello
+COPY --from=builder /usr/lib/ruby/gems/ /usr/lib/ruby/gems/
+COPY --from=builder /usr/bin/mailcatcher /usr/bin/mailcatcher
+COPY --from=builder /usr/bin/catchmail /usr/bin/catchmail
+COPY --chmod=0644 ssmtp.conf /etc/ssmtp/ssmtp.conf
+
+RUN rm -rf /tmp/* /var/tmp/* /var/log/* || true
+
+
+### Really Really Final ###
+FROM scratch
 
 # Expose ports
 EXPOSE 2525 8080
 
 # Entrypoint: run MailCatcher process as $MAIL_USERID
+ARG MAIL_USERID
 USER $MAIL_USERID
 ENTRYPOINT ["mailcatcher", "--no-quit", "--foreground", "--ip=0.0.0.0", "--smtp-port=2525", "--http-port=8080"]
+
+# Copy all our software
+COPY --from=semifinal / /
+
+# Image labels
+ARG BUILD_TIME
+ARG APP_VERSION
+LABEL maintainer="Clifford Weinmann <https://www.cliffordweinmann.com/>"
+LABEL org.opencontainers.image.authors="Clifford Weinmann <https://www.cliffordweinmann.com/>"
+LABEL org.opencontainers.image.created="${BUILD_TIME}"
+LABEL org.opencontainers.image.description="MailCatcher runs a super simple SMTP server which catches any message sent to it to display in a web interface"
+LABEL org.opencontainers.image.licenses="MIT-0"
+LABEL org.opencontainers.image.source="https://github.com/clifford2/mailcatcher"
+LABEL org.opencontainers.image.title="mailcatcher"
+LABEL org.opencontainers.image.url="https://github.com/clifford2/mailcatcher"
+LABEL org.opencontainers.image.version="${APP_VERSION}"
