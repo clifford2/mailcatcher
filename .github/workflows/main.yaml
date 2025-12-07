@@ -49,10 +49,15 @@ jobs:
           username: "${{ secrets.DOCKERHUB_USERNAME }}"
           password: "${{ secrets.DOCKERHUB_TOKEN }}"
 
-      # Use a Makefile to build & push the image
-      - name: "Build & push container image"
+      # Use a Makefile to build the image
+      - name: "Build container image"
         id: "build"
         run: |
           make CONTAINER_ENGINE=docker build
+
+      # Use a Makefile to push the image
+      - name: "Push container image"
+        id: "push"
+        run: |
           make CONTAINER_ENGINE=docker REPOBASE=${{ env.REPOBASE }} push
           make CONTAINER_ENGINE=docker REPOBASE=${{ env.DOCKER_REPOBASE }} push
