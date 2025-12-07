@@ -14,7 +14,7 @@ Dockerfile, and customized to:
 - Modify the start command
 - Run as a non-root user
 - Pin software versions to create immutable images
-- Add netcat & ssmtp for testing
+- Add Netcat (`nc`) & `ssmtp` for testing
 
 ## Usage
 
@@ -33,7 +33,7 @@ podman run --detach --rm \
 
 To run it with Docker, simply replace `podman` with `docker` in the above command (and other examples below).
 
-Some tools may be easier to test if the SMTP service is running on port **587** ([RFC 6409](https://datatracker.ietf.org/doc/html/rfc6409) or **25**. To do that, simply change the hostPort (first number) in the above `--pushlish` arguments. Let's run the web server on port 80 too ;-). Here's an example:
+Some tools may be easier to test if the SMTP service is running on port **587** ([RFC 6409](https://datatracker.ietf.org/doc/html/rfc6409)) or **25**. To do that, simply change the hostPort (first number) in the above `--pushlish` arguments. Let's run the web server on port 80 too ;-). Here's an example:
 
 ```sh
 podman run --detach --rm \
@@ -50,7 +50,7 @@ Here are some examples of how to send email to MailCatcher. These examples assum
 You can send a test email with our `hello` test script (uses netcat):
 
 ```sh
-podman exec -it mailcatcher hello
+podman exec mailcatcher hello
 ```
 
 Additional tools for testing email sending (assuming we're using SMTP port 2525) include:
@@ -64,16 +64,19 @@ Example commands for socat / netcat:
 ```sh
 MSG="HELO mailcatcher.example.com\nMAIL FROM: mailcatcher@example.com\nRCPT TO: clifford@example.org\nDATA\nSubject: CLI Test Message\nContent-Type: text/plain\n\nHello Buddy\n\nWhat's up?\n\nRegards,\nMailCatcher\n.\nquit\n"
 echo -e "$MSG" | socat - TCP4:0.0.0.0:2525
-podman exec mailcatcher sh -c "echo -e \"$MSG\" | nc 0.0.0.0 2525
+podman exec mailcatcher sh -c "echo -e \"$MSG\" | nc 0.0.0.0 2525"
 ```
 
-Example using `ssmtp` & our sample config file:
+Examples using the `ssmtp` & [`msmtp`](https://marlam.de/msmtp/) tools & our sample config files:
 
 ```sh
 MSG="Subject: CLI Test Message\nContent-Type: text/plain\n\nHi Bob,\n\nWa Gwaan?\n\nRegards,\nMailCatcher"
+# Using ssmtp:
 echo -e "$MSG" | ssmtp -C ssmtp.conf bob@marley.invalid
-# or
+# Using ssmtp from inside the container:
 echo -e "$MSG" | podman exec -i mailcatcher ssmtp bob@marley.invalid
+# Using msmtp:
+echo -e $MSG | msmtp --file .msmtprc elnora@mercado.invalid
 ```
 
 Of course you can also configure your favourite email application to use MailCatcher as outgoing mail server / relay.
