@@ -33,10 +33,11 @@ podman run --detach --rm \
 
 To run it with Docker, simply replace `podman` with `docker` in the above command (and other examples below).
 
-Some tools may be easier to test if the SMTP service is running on port **587** ([RFC 6409](https://datatracker.ietf.org/doc/html/rfc6409)) or **25**. To do that, simply change the hostPort (first number) in the above `--pushlish` arguments. Let's run the web server on port 80 too ;-). Here's an example:
+Some tools may be easier to test if the SMTP service is running on port **587** ([RFC 6409](https://datatracker.ietf.org/doc/html/rfc6409)) or **25**. To do that, simply change the hostPort (first number) in the above `--pushlish` arguments.
+Here's an example, running the SMTP server on port 587, and the web server on port 80:
 
 ```sh
-podman run --detach --rm \
+sudo podman run --detach --rm \
   --publish 587:2525 \
   --publish 80:8080 \
   --name mailcatcher \
