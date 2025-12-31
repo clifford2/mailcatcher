@@ -23,7 +23,7 @@ ARG MAIL_USERNAME="catcher"
 ARG MAIL_USERID="9587"
 
 ### Base image ###
-FROM docker.io/library/alpine:3.23.0 AS base
+FROM docker.io/library/alpine:3.23.2 AS base
 RUN apk add --no-cache ruby ruby-bigdecimal libstdc++ sqlite-libs
 # BUILD_DATE should break old caches of the update & upgrade layer
 ARG BUILD_DATE

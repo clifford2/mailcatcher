@@ -2,23 +2,6 @@
 #
 # SPDX-License-Identifier: MIT-0
 
-# Use podman or docker?
-ifeq ($(shell command -v podman 2> /dev/null),)
-	CONTAINER_ENGINE := docker
-else
-	CONTAINER_ENGINE := podman
-endif
-
-# Configure build commands
-ifeq ($(CONTAINER_ENGINE),podman)
-	BUILDARCH := $(shell podman version --format '{{.Client.OsArch}}' | cut -d/ -f2)
-	BUILD_NOLOAD := podman build
-	BUILD_CMD := $(BUILD_NOLOAD)
-else
-	BUILDARCH := $(shell docker version --format '{{.Client.Arch}}')
-	BUILD_NOLOAD := docker buildx build
-	BUILD_CMD := $(BUILD_NOLOAD) --load
-endif
 # Get current versions
 MAILCATCHER_VERSION := $(shell bash ./getenv MAILCATCHER_VERSION)
 RELEASE_VERSION := $(shell bash ./getenv RELEASE_VERSION)
@@ -43,6 +26,24 @@ else
 	SMTP_PORT := 2525
 endif
 HTTP_PORT := 8080
+
+# Use podman or docker?
+ifeq ($(shell command -v podman 2> /dev/null),)
+	CONTAINER_ENGINE := docker
+else
+	CONTAINER_ENGINE := podman
+endif
+
+# Configure build commands
+ifeq ($(CONTAINER_ENGINE),podman)
+	BUILDARCH := $(shell podman version --format '{{.Client.OsArch}}' | cut -d/ -f2)
+	BUILD_NOLOAD := podman build
+	BUILD_CMD := $(BUILD_NOLOAD)
+else
+	BUILDARCH := $(shell docker version --format '{{.Client.Arch}}')
+	BUILD_NOLOAD := docker buildx build
+	BUILD_CMD := $(BUILD_NOLOAD) --load
+endif
 
 
 .PHONY: help
