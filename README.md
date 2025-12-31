@@ -17,7 +17,7 @@ Dockerfile, and customized to:
 
 ## Usage
 
-### Start The Container
+### Obtaining The Container Image
 
 A container image built from this code is available at:
 
@@ -25,6 +25,8 @@ A container image built from this code is available at:
 - [`docker.io/cliffordw/mailcatcher`](https://hub.docker.com/r/cliffordw/mailcatcher)
 
 You can also build your own, by simply running `make build`.
+
+### Start The Container
 
 #### Podman / Docker
 
