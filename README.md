@@ -3,11 +3,10 @@
 ## About
 
 Samuel Cochran's [MailCatcher](https://mailcatcher.me/) runs a super
-simple SMTP server which catches any message sent to it, and displays
+simple SMTP server which catches any messages sent to it, and displays
 them in a web interface. Great for development and testing!
 
-This code packages MailCatcher as a container image.
-This image is based on
+This code packages MailCatcher as a container image. It is based on
 [Dietrich Rordorf](https://github.com/rordi/docker-mailcatcher)'s
 Dockerfile, and customized to:
 
@@ -19,6 +18,13 @@ Dockerfile, and customized to:
 ## Usage
 
 ### Start The Container
+
+A container image built from this code is available at:
+
+- [`ghcr.io/clifford2/mailcatcher`](https://github.com/clifford2/mailcatcher/pkgs/container/mailcatcher)
+- [`docker.io/cliffordw/mailcatcher`](https://hub.docker.com/r/cliffordw/mailcatcher)
+
+You can also build your own, by simply running `make build`.
 
 #### Podman / Docker
 
@@ -164,9 +170,6 @@ if running in Podman / Docker).
 
 ## Resources
 
-- Container image available at:
-	- [`ghcr.io/clifford2/mailcatcher`](https://github.com/clifford2/mailcatcher/pkgs/container/mailcatcher)
-	- [`docker.io/cliffordw/mailcatcher`](https://hub.docker.com/r/cliffordw/mailcatcher)
 - MailCatcher source code: <https://github.com/sj26/mailcatcher>
 - Docker build based on <https://github.com/rordi/docker-mailcatcher>
 
