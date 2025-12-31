@@ -54,11 +54,11 @@ help:
 
 # After any changing .env, fix the image tags in other files
 .PHONY: fixtags
+fixtags: IMAGE_NAME := ghcr.io/clifford2/$(IMAGE_NAME)
 fixtags:
 	sed -i -e "s|$(IMAGE_NAME):..*$$|$(IMAGE_NAME):$(IMAGE_TAG)|" README.md
-	sed -i -e "s|image: $(IMAGE_NAME):..*$$|image: $(IMAGE_NAME):$(IMAGE_TAG)|" docker-compose.yml
-	sed -i -e "s|image: $(IMAGE_NAME):..*$$|image: $(IMAGE_NAME):$(IMAGE_TAG)|" k8s.yaml
-	sed -i -e "s|version: ..*$$|version: $(IMAGE_TAG)|" k8s.yaml
+	sed -i -e "s|image: ..*$$|image: $(IMAGE_NAME):$(IMAGE_TAG)|" samples/docker-compose.yml
+	sed -i -e "s|image: ..*$$|image: $(IMAGE_NAME):$(IMAGE_TAG)|" -e "s|version: ..*$$|version: $(IMAGE_TAG)|" samples/k8s.yaml
 
 .PHONY: build
 build:

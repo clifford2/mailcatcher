@@ -18,10 +18,12 @@ Dockerfile, and customized to:
 
 ## Usage
 
-### Start the container
+### Start The Container
 
-To use this, exposing the SMTP and HTTP services on unprivileved ports,
-run the container with `podman` (ideally as a non-root user):
+#### Podman / Docker
+
+To use this image, exposing the SMTP and HTTP services on unprivileved
+ports, run the container with `podman` (ideally as a **non-root user**):
 
 ```sh
 podman run --detach --rm \
@@ -31,10 +33,16 @@ podman run --detach --rm \
   ghcr.io/clifford2/mailcatcher:0.10.0-12.20251231
 ```
 
-To run it with Docker, simply replace `podman` with `docker` in the above command (and other examples below).
+To run it with Docker, simply replace `podman` with `docker` in the
+above command (and other examples below).
 
-Some tools may be easier to test if the SMTP service is running on port **587** ([RFC 6409](https://datatracker.ietf.org/doc/html/rfc6409)) or **25**. To do that, simply change the hostPort (first number) in the above `--pushlish` arguments.
-Here's an example, running the SMTP server on port 587, and the web server on port 80:
+Some tools may be easier to test if the SMTP service is running on port
+**587** ([RFC 6409](https://datatracker.ietf.org/doc/html/rfc6409)) or
+**25**. To do that, simply change the hostPort (left side number) in the
+above `--publish` arguments.
+
+Here's an example, running the SMTP server on port 587, and the web
+server on port 80:
 
 ```sh
 sudo podman run --detach --rm \
@@ -44,45 +52,112 @@ sudo podman run --detach --rm \
   ghcr.io/clifford2/mailcatcher:0.10.0-12.20251231
 ```
 
-### Sending email
+#### Docker Compose
 
-Here are some examples of how to send email to MailCatcher. These examples assume you're running the server on port 2525. Please change the port number (in the commands below, or in your config files), if you're using a different port.
+A sample [`samples/docker-compose.yml`](samples/docker-compose.yml) file is provided.
+You can use it by running:
 
-You can send a test email with our `hello` test script (uses netcat):
+```sh
+docker compose up -d
+```
+
+This can easily be added to an existing `docker-compose.yml` file to add
+an email service to existing applications.
+
+#### Kubernetes
+
+An example Kubernetes manifest file is provided in [`samples/k8s.yaml`](samples/k8s.yaml).
+It contains a Deployment, Services for the HTTP and SMTP ports, and an
+Ingress for the HTTP port.
+
+This example would require some customization to work in your cluster, at
+least for the Ingress.
+
+### Sending Email
+
+You can send a test email with our `hello` test script inside the container
+image (uses netcat):
 
 ```sh
 podman exec mailcatcher hello
 ```
 
-Additional tools for testing email sending (assuming we're using SMTP port 2525) include:
+Here are some other examples of how to send email to MailCatcher. These
+examples assume you're running the server on port 2525. Please change the
+port number (in the commands below, or in your config files), if you're
+using a different port.
 
-- `socat - TCP4:0.0.0.0:2525`
-- `netcat 0.0.0.0 2525`
-- `telnet 0.0.0.0 2525`
+Additional tools for testing email submission (examples below):
 
-Example commands for socat / netcat:
+- Tools available in the container image:
+	- Netcat
+	- ssmtp - sample config file in [`samples/ssmtp.conf`](samples/ssmtp.conf)
+- Other tools:
+	- socat
+	- [msmtp](https://marlam.de/msmtp/) - sample config file in [`samples/.msmtprc`](samples/.msmtprc)
+	- Good old Telnet (interactive): `telnet 0.0.0.0 2525`
+
+Example commands for netcat / socat:
 
 ```sh
-MSG="HELO mailcatcher.example.com\nMAIL FROM: mailcatcher@example.com\nRCPT TO: clifford@example.org\nDATA\nSubject: CLI Test Message\nContent-Type: text/plain\n\nHello Buddy\n\nWhat's up?\n\nRegards,\nMailCatcher\n.\nquit\n"
-echo -e "$MSG" | socat - TCP4:0.0.0.0:2525
-podman exec mailcatcher sh -c "echo -e \"$MSG\" | nc 0.0.0.0 2525"
+# Define a sample SMTP conversation:
+BASEMSG="HELO mailcatcher.example.com
+MAIL FROM: nobody@example.com
+RCPT TO: mailcatcher@example.org
+DATA
+Subject: CLI Test Message
+Content-Type: text/plain
+
+Hello Buddy
+
+What's up?
+
+Regards,
+MailCatcher
+.
+quit"
+
+# Send using netcat from inside the container:
+MSG=$(echo "${BASEMSG}" | sed -e 's/nobody/netcat/')
+podman exec mailcatcher sh -c "echo \"${MSG}\" | nc 0.0.0.0 2525"                                                                             
+
+# Send using socat (installed locally):
+MSG=$(echo "${BASEMSG}" | sed -e 's/nobody/socat/')
+echo "${MSG}" | socat - TCP4:0.0.0.0:2525
 ```
 
-Examples using the `ssmtp` & [`msmtp`](https://marlam.de/msmtp/) tools & our sample config files:
+Examples using the `ssmtp` & `msmtp` tools & our sample config files:
 
 ```sh
-MSG="Subject: CLI Test Message\nContent-Type: text/plain\n\nHi Bob,\n\nWa Gwaan?\n\nRegards,\nMailCatcher"
-# Using ssmtp:
-echo -e "$MSG" | ssmtp -C ssmtp.conf bob@marley.invalid
-# Using ssmtp from inside the container:
-echo -e "$MSG" | podman exec -i mailcatcher ssmtp bob@marley.invalid
-# Using msmtp:
-echo -e $MSG | msmtp --file .msmtprc elnora@mercado.invalid
+# Define a sample email message:
+MSG="To: Jade McDonald <JadeMcDonald@example.invalid>
+From: Stefan Vogel <StefanVogel@mailinator.com>
+Subject: CLI Test Message
+Content-Type: text/plain
+
+Hi Jade,
+
+It's been ages - hope life's treating you well; let's catch up soon!
+
+Regards,"
+
+# Send using ssmtp (installed locally):
+/usr/bin/echo -e "${MSG}\nlocal ssmtp" | ssmtp -C samples/ssmtp.conf -t
+
+# Send using ssmtp from inside the container:
+/usr/bin/echo -e "${MSG}\ncontainer ssmtp" | podman exec -i mailcatcher ssmtp -t
+
+# Send using msmtp (installed locally):
+/usr/bin/echo -e "${MSG}\nmsmtp" | msmtp --file samples/.msmtprc --read-envelope-from --read-recipients
 ```
 
-Of course you can also configure your favourite email application to use MailCatcher as outgoing mail server / relay.
+Of course you can also configure your favourite email application to use
+MailCatcher as outgoing mail server / relay. Here is an example for
+[Thunderbird](https://www.thunderbird.net/):
 
-### Web Interface
+![Thunderbird config](samples/thunderbird-config.png "Thunderbird config")
+
+### View Messages
 
 View the caught emails in the web interface at <http://localhost:8080/>.
 
@@ -93,14 +168,12 @@ View the caught emails in the web interface at <http://localhost:8080/>.
 	- [`ghcr.io/clifford2/mailcatcher`](https://github.com/clifford2/mailcatcher/pkgs/container/mailcatcher)
 	- [`docker.io/cliffordw/mailcatcher`](https://hub.docker.com/r/cliffordw/mailcatcher)
 - Docker build based on <https://github.com/rordi/docker-mailcatcher>
-- `.msmtprc`: Sample config file for [msmtp](https://marlam.de/msmtp/)
-- `ssmtp.conf`: Sample config file for `ssmtp`
 
 ## License & Disclaimer
 
 This code is shared under the MIT License.
 
-The original Dockerfile is © 2016 Dietrich Rordorf <dr@ediqo.com>.
+The original Dockerfile is © 2016 Dietrich Rordorf <https://github.com/rordi>.
 
 Modifications, and all other files are © Clifford Weinmann <https://www.cliffordweinmann.com/>.
 
@@ -109,6 +182,8 @@ See [`LICENSES/MIT.txt`](LICENSES/MIT.txt) for the full license text and disclai
 
 ## Security
 
-This code is updated as often as possible, but support is provided on a best effort basis only.
+This code is updated as often as possible, but support is provided on
+a best effort basis only.
 
-Please report any problems or vulnerabilities by opening a [GitHub issue here](https://github.com/clifford2/mailcatcher/issues).
+Please report any problems or vulnerabilities by opening a
+[GitHub issue here](https://github.com/clifford2/mailcatcher/issues).

@@ -1,8 +1,7 @@
+---
 # SPDX-FileCopyrightText: © 2019 Clifford Weinmann <https://www.cliffordweinmann.com/>
-#
 # SPDX-License-Identifier: MIT-0
 
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -33,7 +32,7 @@ spec:
       hostIPC: false
       containers:
       - name: mailcatcher
-        image: ghcr.io/clifford2/mailcatcher:0.10.0-9
+        image: ghcr.io/clifford2/mailcatcher:0.10.0-12.20251231
         imagePullPolicy: IfNotPresent
         ports:
         - name: smtp

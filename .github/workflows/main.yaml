@@ -55,8 +55,8 @@ jobs:
         run: |
           make CONTAINER_ENGINE=docker build
 
-      # Use a Makefile to push the image
-      - name: "Push container image"
+      # Use a Makefile to push the image to both GHCR & Docker Hub
+      - name: "Push container images"
         id: "push"
         run: |
           make CONTAINER_ENGINE=docker REPOBASE=${{ env.REPOBASE }} push

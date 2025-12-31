@@ -1,23 +1,21 @@
+---
 # SPDX-FileCopyrightText: © 2019 Clifford Weinmann <https://www.cliffordweinmann.com/>
-#
 # SPDX-License-Identifier: MIT-0
 
 # Example Docker compose file
 
-version: '3.1'
-
 #-# Define the network
 networks:
-  your-network:
+  mail-network:
 
 #-# Define services
 services:
   ## Mailcatcher, for testing email features (DEV ONLY)
   # This service is used in DEV only
   mailcatcher:
-    image: ghcr.io/clifford2/mailcatcher:0.10.0-9
+    image: ghcr.io/clifford2/mailcatcher:0.10.0-12.20251231
     networks:
-      your-network:
+      mail-network:
     ports:
       - "2525:2525"
       - "8080:8080"

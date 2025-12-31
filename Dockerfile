@@ -69,7 +69,7 @@ COPY --from=builder --chmod=0755 /usr/local/bin/hello /usr/local/bin/hello
 COPY --from=builder /usr/lib/ruby/gems/ /usr/lib/ruby/gems/
 COPY --from=builder /usr/bin/mailcatcher /usr/bin/mailcatcher
 COPY --from=builder /usr/bin/catchmail /usr/bin/catchmail
-COPY --chmod=0644 ssmtp.conf /etc/ssmtp/ssmtp.conf
+COPY --chmod=0644 samples/ssmtp.conf /etc/ssmtp/ssmtp.conf
 
 RUN rm -rf /tmp/* /var/tmp/* /var/log/* || true
 
