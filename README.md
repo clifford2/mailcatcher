@@ -2,9 +2,9 @@
 
 ## About
 
-[MailCatcher](https://mailcatcher.me/) runs a super simple SMTP server
-which catches any message sent to it to display in a web interface.
-Great for development and testing!
+Samuel Cochran's [MailCatcher](https://mailcatcher.me/) runs a super
+simple SMTP server which catches any message sent to it, and displays
+them in a web interface. Great for development and testing!
 
 This code packages MailCatcher as a container image.
 This image is based on
@@ -54,15 +54,15 @@ sudo podman run --detach --rm \
 
 #### Docker Compose
 
-A sample [`samples/docker-compose.yml`](samples/docker-compose.yml) file is provided.
-You can use it by running:
+A sample [`docker-compose.yml`](samples/docker-compose.yml) file is
+provided. You can use it by running:
 
 ```sh
 docker compose up -d
 ```
 
-This can easily be added to an existing `docker-compose.yml` file to add
-an email service to existing applications.
+This can easily be incorporated into an existing `docker-compose.yml`
+file to add an email service to existing applications.
 
 #### Kubernetes
 
@@ -75,7 +75,7 @@ least for the Ingress.
 
 ### Sending Email
 
-You can send a test email with our `hello` test script inside the container
+You can send a test email with our `hello` script inside the container
 image (uses netcat):
 
 ```sh
@@ -83,11 +83,11 @@ podman exec mailcatcher hello
 ```
 
 Here are some other examples of how to send email to MailCatcher. These
-examples assume you're running the server on port 2525. Please change the
+examples assume you're running the server on port 2525 - please change the
 port number (in the commands below, or in your config files), if you're
 using a different port.
 
-Additional tools for testing email submission (examples below):
+Tools for sending email messages include (examples below):
 
 - Tools available in the container image:
 	- Netcat
@@ -119,7 +119,7 @@ quit"
 
 # Send using netcat from inside the container:
 MSG=$(echo "${BASEMSG}" | sed -e 's/nobody/netcat/')
-podman exec mailcatcher sh -c "echo \"${MSG}\" | nc 0.0.0.0 2525"                                                                             
+podman exec mailcatcher sh -c "echo \"${MSG}\" | nc 0.0.0.0 2525"
 
 # Send using socat (installed locally):
 MSG=$(echo "${BASEMSG}" | sed -e 's/nobody/socat/')
@@ -159,23 +159,28 @@ MailCatcher as outgoing mail server / relay. Here is an example for
 
 ### View Messages
 
-View the caught emails in the web interface at <http://localhost:8080/>.
+View the caught emails in the web interface (at <http://127.0.0.1:8080/>
+if running in Podman / Docker).
 
 ## Resources
 
-- MailCatcher source code: <https://github.com/sj26/mailcatcher>
 - Container image available at:
 	- [`ghcr.io/clifford2/mailcatcher`](https://github.com/clifford2/mailcatcher/pkgs/container/mailcatcher)
 	- [`docker.io/cliffordw/mailcatcher`](https://hub.docker.com/r/cliffordw/mailcatcher)
+- MailCatcher source code: <https://github.com/sj26/mailcatcher>
 - Docker build based on <https://github.com/rordi/docker-mailcatcher>
 
 ## License & Disclaimer
 
 This code is shared under the MIT License.
 
-The original Dockerfile is © 2016 Dietrich Rordorf <https://github.com/rordi>.
+[MailCatcher](https://mailcatcher.me/) is © 2010-2019 Samuel Cochran.
 
-Modifications, and all other files are © Clifford Weinmann <https://www.cliffordweinmann.com/>.
+The original Dockerfile is © 2016 Dietrich Rordorf
+<https://github.com/rordi>.
+
+Dockerfile modifications, and all other files in this repo are
+© 2019 Clifford Weinmann <https://www.cliffordweinmann.com/>.
 
 This code is provided *AS IS*, without warranty of any kind.
 See [`LICENSES/MIT.txt`](LICENSES/MIT.txt) for the full license text and disclaimer.
