@@ -28,7 +28,7 @@ podman run --detach --rm \
   --publish 2525:2525 \
   --publish 8080:8080 \
   --name mailcatcher \
-  ghcr.io/clifford2/mailcatcher:0.10.0-11.20251207
+  ghcr.io/clifford2/mailcatcher:0.10.0-12.20251231
 ```
 
 To run it with Docker, simply replace `podman` with `docker` in the above command (and other examples below).
@@ -41,7 +41,7 @@ sudo podman run --detach --rm \
   --publish 587:2525 \
   --publish 80:8080 \
   --name mailcatcher \
-  ghcr.io/clifford2/mailcatcher:0.10.0-11.20251207
+  ghcr.io/clifford2/mailcatcher:0.10.0-12.20251231
 ```
 
 ### Sending email
